@@ -1,0 +1,30 @@
+{% load static cra %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>My App</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+
+    <!-- Runtime config -->
+    <script>
+        window.__APP_CONFIG__ = {
+            appVersion: "{{ APP_VERSION }}",
+            apiBaseUrl: "{{ API_BASE_URL }}",
+            appEnv: "{{ APP_ENV }}",
+            devMode: {{ DEV_MODE|yesno:"true,false" }}
+        };
+    </script>
+
+    <!-- CRA build artifacts -->
+    {% cra_css_tags %}
+
+</head>
+<body>
+<div id="root"></div>
+
+<!-- CRA main bundle -->
+{% cra_js_tags %}
+
+</body>
+</html>

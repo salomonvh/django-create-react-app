@@ -16,15 +16,30 @@
         };
     </script>
 
-    <!-- CRA build artifacts -->
-    {% cra_css_tags %}
+    {% if not DEV_MODE or not DEV_SERVER_URL %}
+        <!-- CRA build artifacts -->
+        {% cra_css_tags %}
+    {% endif %}
 
 </head>
 <body>
 <div id="root"></div>
 
-<!-- CRA main bundle -->
-{% cra_js_tags %}
+{% if DEV_MODE and DEV_SERVER_URL %}
+    {# Inject dev server assets after #root so DOM exists #}
+    {% if DEV_SERVER_TYPE == 'vite' %}
+        <script type="module" src="{{ DEV_SERVER_URL }}/@vite/client"></script>
+        <script type="module" src="{{ DEV_SERVER_URL }}/src/main.tsx"></script>
+    {% else %}
+        {# CRA dev server bundles (defer to ensure DOM is parsed) #}
+        <script defer src="{{ DEV_SERVER_URL }}/static/js/bundle.js"></script>
+        <script defer src="{{ DEV_SERVER_URL }}/static/js/vendors~main.chunk.js"></script>
+        <script defer src="{{ DEV_SERVER_URL }}/static/js/main.chunk.js"></script>
+    {% endif %}
+{% else %}
+    <!-- CRA main bundle -->
+    {% cra_js_tags %}
+{% endif %}
 
 </body>
 </html>

@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: django-cra-backend:dev
+    working_dir: /app
+    command: bash -lc "python backend/manage.py migrate && python backend/manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=*
+      # Inject CRA dev server scripts into Django template
+      - DEV_MODE=1
+      - FRONTEND_DEV_SERVER_TYPE=cra
+      - FRONTEND_DEV_SERVER_URL=http://localhost:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - frontend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: django-cra-frontend:dev
+    working_dir: /app/frontend
+    command: sh -lc "npm install && npm start"
+    ports:
+      - "3000:3000"
+    environment:
+      # CRA listens on 0.0.0.0 inside container
+      - HOST=0.0.0.0
+      - PORT=3000
+      - WDS_SOCKET_HOST=localhost
+      - WDS_SOCKET_PORT=3000
+    volumes:
+      - ./frontend:/app/frontend
+      - frontend_node_modules:/app/frontend/node_modules
+
+volumes:
+  frontend_node_modules: {}

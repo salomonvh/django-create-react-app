@@ -13,6 +13,8 @@ class AppView(TemplateView):
         ctx.update({
             "APP_VERSION": getattr(settings, "APP_VERSION", ""),
             "DEV_MODE": getattr(settings, "DEV_MODE", False),
+            "DEV_SERVER_URL": getattr(settings, "FRONTEND_DEV_SERVER_URL", ""),
+            "DEV_SERVER_TYPE": getattr(settings, "FRONTEND_DEV_SERVER_TYPE", "cra"),
             # Useful extras
             "API_BASE_URL": getattr(settings, "API_BASE_URL", "/api"),
             "APP_ENV": getattr(settings, "APP_ENV", "dev"),
